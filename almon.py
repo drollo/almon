@@ -129,6 +129,7 @@ def temp_check():
             if temp_low_msg_sent == False:
                 sms_send(contact_nbr, TEMP_LOW_MSG)
                 temp_low_msg_sent = True
+                temp_low_msg_cooldown = MSG_COOLDOWN_TIME / POLL_TIME
             else:
                 if temp_low_msg_cooldown == 0:
                     temp_low_msg_sent = False
