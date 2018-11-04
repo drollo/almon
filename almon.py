@@ -126,15 +126,16 @@ def temp_get_min():
         almo_debug("Current temp, %s: %d" % (sensor_tbl[sensor.id], temp))
         if temp < temp_min:
             temp_min = temp
-    return temp_min
+            lowest_sensor = sensor_tbl[sensor.id]
+    return temp_min, lowest_sensor
 
 def temp_check():
     global temp_state
     global temp_low_msg_sent
     global temp_low_msg_cooldown
 
-    temp = temp_get_min()
-    almo_debug("Current lowest temp: %d" % (temp))
+    temp, lowest_sensor = temp_get_min()
+    almo_debug("Current lowest temp: %d, sensor: %s" % (temp, lowest_sensor))
 
     if temp < TEMP_LIMIT:
         if temp_state == TEMP_NORMAL:
