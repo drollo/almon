@@ -1,0 +1,31 @@
+Pinout and connection of components.
+
+DS18B20
+  ___
+ /   \ 
+|_____|
+ | | |
+ 1 2 3
+
+1: GND
+2: GPIO4
+3: 3.3V
+(2-3 R5K)
+
+
+4N25
+
+ 6 5 4
+ |_|_|
+|     |
+|o____|
+ | | |
+ 1 2 3
+
+1: PWR ADAPT GND
+2: PWRD ADAPT 5V (R1K)
+3: N/C
+4: RASPI GND
+5: RASPI GPIO17 (R10K)
+6: N/C
+
