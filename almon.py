@@ -1,3 +1,4 @@
+# coding=utf8
 import serial
 from w1thermsensor import W1ThermSensor
 import RPi.GPIO as GPIO
@@ -19,8 +20,18 @@ PWR_DOWN_MSG = "Alpon virta poikki!"
 PWR_UP_MSG = "Alpon virta palasi"
 
 contact_nbr = "0443055904"
+sensor_names = ["ykkössensori"]
 
-sensor = W1ThermSensor()
+sensor_tbl = {}
+sensor_idx = 0
+for sensor in W1ThermSensor.get_available_sensors():
+    if sensor_idx < len(sensor_names):
+        sensor_name = sensor_names[sensor_idx]
+    else:
+        sensor_name = "sensor %s" % sensor.id
+    sensor_tbl[sensor.id] = sensor_name
+    sensor_idx += 1
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(PWR_MON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
@@ -108,15 +119,22 @@ def pwr_check():
                 sms_send(contact_nbr, PWR_UP_MSG)
                 pwr_up_msg_sent = True
 
+def temp_get_min():
+    temp_min = 1000000
+    for sensor in W1ThermSensor.get_available_sensors():
+        temp = sensor.get_temperature()
+        almo_debug("Current temp, %s: %d" % (sensor_tbl[sensor.id], temp))
+        if temp < temp_min:
+            temp_min = temp
+    return temp_min
 
 def temp_check():
     global temp_state
     global temp_low_msg_sent
     global temp_low_msg_cooldown
 
-    temp = sensor.get_temperature()
-
-    almo_debug("Current temp: %d" % temp)
+    temp = temp_get_min()
+    almo_debug("Current lowest temp: %d" % (temp))
 
     if temp < TEMP_LIMIT:
         if temp_state == TEMP_NORMAL:
